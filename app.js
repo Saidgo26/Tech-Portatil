@@ -25,6 +25,7 @@ const { MONGO_URI } = require('./config');
 
 })()
 
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use('/', express.static(path.resolve('views', 'home')));
 app.use('/signup', express.static(path.resolve('views', 'signup')));
 app.use('/login', express.static(path.resolve('views', 'login')));
+app.use('/styles', express.static(path.resolve('views', 'styles')));
 app.use('/store', express.static(path.resolve('views', 'store')));
 app.use('/admin', express.static(path.resolve('views', 'admin')));
 app.use('/components', express.static(path.resolve('views', 'components')));

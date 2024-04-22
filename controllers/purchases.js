@@ -17,10 +17,17 @@ purchasesRouter.post('/', async (request, response) => {
         // Guarda la nueva compra en la base de datos
         const savedPurchase = await newPurchase.save();
 
+        // Agrega la compra al usuario
+        user.purchase.push(savedPurchase._id);
+        await user.save();
+       
+
+
+
         return response.status(201).json(savedPurchase);
     } catch (error) {
         console.error('Error al crear la compra:', error);
-        return response.status(500).json({ error: 'Error al crear la compra' });
+        return response.status(403).json({ error: 'Error al crear la compra' });
     }
 });
 
@@ -36,15 +43,17 @@ purchasesRouter.get('/', async (request, response) => {
         return response.status(500).json({ error: 'Error al obtener las compras' });
     }
 });
+
+
 purchasesRouter.get('/:id', async (request, response) => {
 
     try {
         const userId = request.user
     
         // Obtener todas las compras del usuario de la base de datos
-        const purchases = await Purchase.find({ user: userId });
+        const purchase = await Purchase.find({ user: userId });
         // Devolver las compras en formato JSON
-        return response.status(200).json(purchases);
+        return response.status(200).json(purchase);
     } catch (error) {
         console.error('Error al obtener las compras:', error);
         return response.status(500).json({ error: 'Error al obtener las compras' });

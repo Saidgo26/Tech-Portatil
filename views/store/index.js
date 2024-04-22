@@ -39,6 +39,8 @@ const buyProducts = async () => {
             products: purchaseProducts,
             totalPrice: parseFloat(totalPriceCart.textContent)
         });
+        console.log(data);
+        console.log(purchaseProducts);
 
         // Limpiar el carrito después de realizar la compra
         cartItems = [];
@@ -84,7 +86,7 @@ const renderCartItems = () => {
         const newCartItem = document.createElement('tr');
         newCartItem.innerHTML = `
             <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productName}</td>
-            <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productPrice.toFixed(2)}</td>
+            <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productPrice.toFixed(2)}$</td>
             <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.quantity}</td>
             <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid flex justify-center items-center ">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 remove-btn bg-white cursor-pointer transition-all duration-[0.3s] ease-[ease-in] text-red-600 p-2 rounded-[50%] hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in] hover:bg-red-600 hover:text-white">
@@ -123,17 +125,19 @@ const loadProducts = async () => {
 
         data.forEach(product => {
             const newProduct = document.createElement('li');
+            
+            const fileName = product.productImage.split('\\').pop();
             newProduct.id = product.id;
-            newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full transition-all duration-[0.3s] ease-[ease-in] shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
+            newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
             newProduct.innerHTML = `
                 <div class="h-2/5">
-                    <img src="${product.productImage}" alt="${product.productName}" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
+                    <img src="/images/${fileName}" alt="${product.productName}" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
                 </div>
-                <div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
+                <div class=" h-auto flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
                     <p id="product-name" class="font-bold text-white">${product.productName}</p>
                     <p  class="text-white">${product.productDescription}</p>
                     <p class="text-white">${product.productBrand}</p>
-                    <p id="product-price" class="font-bold text-white">${product.productPrice}</p>
+                    <p id="product-price" class="font-bold text-white">${product.productPrice}$</p>
                     <button class="add-btn font-bold bg-indigo-800 text-[white] cursor-pointer p-4 rounded-lg hover:bg-indigo-900 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Agregar al Carrito</button>
                 </div>
             `;
@@ -152,7 +156,65 @@ const toggleCartSection = () => {
     });
 };
 
+
+
+const navBar = document.querySelector('#nav-bar')
+
+const navBtn = document.querySelector('#nav-btn')
+
+const toggleMobileMenu = () => {
+  navBtn.addEventListener('click', e =>{
+
+    const menuMobile = navBar.children[0].children[1].children[3];
+    
+    if (!navBtn.classList.contains('active')) {
+      navBtn.classList.add('active');
+      navBtn.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />`; 
+      menuMobile.classList.remove('hidden');
+      menuMobile.classList.add('flex');
+    } else {
+      navBtn.classList.remove('active');
+      navBtn.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />`;
+      menuMobile.classList.add('hidden');
+      menuMobile.classList.remove('flex');
+    } 
+  })};
+
+  const closeBtnDesktop = navBar.children[0].children[1].children[2].children[0];
+  const closeBtnMobile = navBar.children[0].children[1].children[3].children[0];
+  
+  closeBtnDesktop.addEventListener('click',async e =>{
+    console.log(e.target);
+   
+  try {
+    await axios.get('/api/logout');
+    console.log('sesion cerrada');
+    window.location.replace('/login');
+    
+  } catch (error) {
+    console.log('error');
+    
+  }
+  });
+  
+  
+  closeBtnMobile.addEventListener('click',async e =>{
+    console.log(e.target);
+    
+   
+    try {
+      await axios.get('/api/logout');
+      window.location.replace('/login');
+      
+    } catch (error) {
+      console.log('error');
+      
+    }
+    });
+  
+
 loadProducts();
+toggleMobileMenu();
 toggleCartSection();
 
 
@@ -191,7 +253,7 @@ toggleCartSection();
 //                     <ul>
 //                         ${productDetails.map(product => `<li class="text-white">${product.name} - Cantidad: ${product.quantity}</li>`).join('')}
 //                     </ul>
-//                     <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}</p>
+//                     <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}$</p>
 //                     <p class="text-gray-300"><b>Confirmacion de Compra:</b>${String(validation)}</p>
 //                     <div class="flex items-center justify-center">
 //                         <button id="delete-purchase-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>

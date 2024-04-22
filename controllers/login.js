@@ -4,9 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-loginRouter.post('/' , async (request, response)=>{
+loginRouter.post('/', async (request, response)=>{
+try {
     console.log('Inicio de la solicitud de inicio de sesión');
-    console.log('Datos de la solicitud:', request.body);
+console.log('Datos de la solicitud:', request.body);
 
 const {email, password } = request.body;
 console.log('Email:', email);
@@ -47,6 +48,12 @@ console.log('Cookie establecida');
 console.log('Fin de la solicitud de inicio de sesión');
 
 return response.status(200).json(userExist);
+
+} catch (error) {
+    
+console.log("este es el error:",error);
+
+}
 
 
 

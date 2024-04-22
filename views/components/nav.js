@@ -156,18 +156,18 @@ const  createNavAdmin = () => {
     </svg>
     
     
+    <!-- escritorio -->
+        <div class="hidden md:flex flex-row gap-4 ">
+          <button id="close-btn" class="transition ease-in-out text-white hover:bg-[#116b54] py-2 px-4 rounded-lg font-bold">Cerrar Sesion</button>
+         
+        </div>
+      <!-- menu-movil -->
+        <div class="bg-slate-900/60 fixed top-16 right-0 left-0 bottom-0 justify-center items-center flex-col gap-4 hidden">
+        <button id="close-btn" class="transition ease-in-out text-white hover:bg-[#116b54] py-2 px-4 rounded-lg font-bold">Cerrar Sesion</button>
+         
+      </div>
     </div>
     `;
-    // <!-- escritorio -->
-    //     <div class="hidden md:flex flex-row gap-4 ">
-    //       <button id="close-btn" class="transition ease-in-out text-white hover:bg-[#116b54] py-2 px-4 rounded-lg font-bold">Cerrar Sesion</button>
-         
-    //     </div>
-    //   <!-- menu-movil -->
-    //     <div class="bg-slate-900/60 fixed top-16 right-0 left-0 bottom-0 justify-center items-center flex-col gap-4 hidden">
-    //     <button id="close-btn" class="transition ease-in-out text-white hover:bg-[#116b54] py-2 px-4 rounded-lg font-bold">Cerrar Sesion</button>
-         
-    //   </div>
   };
 
 if (window.location.pathname === '/') {
@@ -201,37 +201,37 @@ const toggleMobileMenu = () => {
     } 
   })};
 
-  // const closeBtnDesktop = navBar.children[0].children[2].children[0];
-  // const closeBtnMobile = navBar.children[0].children[3].children[0];
+  const closeBtnDesktop = navBar.children[0].children[2].children[0];
+  const closeBtnMobile = navBar.children[0].children[3].children[0];
   
-  // closeBtnDesktop.addEventListener('click',async e =>{
-  //   console.log(e.target);
+  closeBtnDesktop.addEventListener('click',async e =>{
+    console.log(e.target);
    
-  // try {
-  //   await axios.get('/api/logout');
-  //   console.log('sesion cerrada');
-  //   window.location.pathname === '/signup';
+  try {
+    await axios.get('/api/logout');
+    console.log('sesion cerrada');
+    window.location.replace('/login');
     
-  // } catch (error) {
-  //   console.log('error');
+  } catch (error) {
+    console.log('error');
     
-  // }
-  // });
+  }
+  });
   
   
-  // closeBtnMobile.addEventListener('click',async e =>{
-  //   console.log(e.target);
+  closeBtnMobile.addEventListener('click',async e =>{
+    console.log(e.target);
     
    
-  //   try {
-  //     await axios.get('/api/logout');
-  //     window.location.pathname == '/login';
+    try {
+      await axios.get('/api/logout');
+      window.location.replace('/login');
       
-  //   } catch (error) {
-  //     console.log('error');
+    } catch (error) {
+      console.log('error');
       
-  //   }
-  //   });
+    }
+    });
   
 
 const navBtnStore = document.querySelector('#nav-btn-store')

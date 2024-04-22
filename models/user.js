@@ -8,11 +8,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    purchase: {
+    purchase: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Purchase',
         
-    }
+    }]
 });
 
 userSchema.set('toJSON', {

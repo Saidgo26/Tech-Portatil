@@ -27,16 +27,19 @@ try {
         data.forEach(product => {
             const newProduct = document.createElement('li');
             newProduct.id = product.id;
+       
+            const fileName = product.productImage.split('\\').pop();
+          
             newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
             newProduct.innerHTML = `
             <div class="h-2/5">
-                <img src="${product.productImage}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
+                <img src="/images/${fileName}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
             </div>
             <div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
                 <p class="font-bold text-white">${product.productName}</p>
                 <p class="text-white">${product.productDescription}</p>
                 <p class="text-white">${product.productBrand}</p>
-                <p class="font-bold text-white">${product.productPrice}</p>
+                <p class="font-bold text-white">${product.productPrice}$</p>
                 <div class="flex justify-between">
                 <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
                 <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
@@ -59,6 +62,7 @@ try {
     try {
         for (const purchase of data) {
             const validation = purchase.validated;
+            console.log();
             // Obtener el nombre del usuario
 
             const userResponse = await axios.get(`/api/users/${purchase.user}`);
@@ -69,7 +73,7 @@ try {
             for (const productInfo of purchase.products) {
                 const productResponse = await axios.get(`/api/products/${productInfo.product}`);
                 const productName = productResponse.data.product.productName;
-                console.log(productResponse.data.product.productName);
+                // console.log(productResponse.data.product.productName);
                 productDetails.push({
                     name: productName,
                     quantity: productInfo.quantity
@@ -78,6 +82,14 @@ try {
 
             // Crear elementos HTML para mostrar la compra
             const newPurchase = document.createElement('li');
+            const trueIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500">
+            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            </svg>
+            `;
+            const falseIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6  text-red-600">
+            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+          </svg>
+            `
             newPurchase.id = purchase.id;
             newPurchase.innerHTML = `
                 <div class="bg-gray-900 p-4 rounded-lg shadow-lg">
@@ -86,8 +98,8 @@ try {
                     <ul>
                         ${productDetails.map(product => `<li class="text-white">${product.name} - Cantidad: ${product.quantity}</li>`).join('')}
                     </ul>
-                    <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}</p>
-                    <p class="text-gray-300"><b>Confirmacion de Compra:</b>${String(validation)}</p>
+                    <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}$</p>
+                    <p class="text-gray-300"><b>Confirmacion de Compra:</b>${validation ? `${trueIcon}` : `${falseIcon}`}</p>
                     <div class="flex justify-between">
                         <button id="delete-purchase-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
                         <button id="validate-purchase-btn"class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Confirmar</button>
@@ -139,17 +151,19 @@ form.addEventListener('submit', async e => {
 
         // Crear un nuevo elemento de lista con los datos del producto y agregarlo a la lista en el frontend
         const newProduct = document.createElement('li');
-        newProduct.id = data._id; // Cambiado de data.id a data._id
+       
+        newProduct.id = data._id;
+        const fileName = data.productImage.split('\\').pop();
         newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full transition-all duration-[0.3s] ease-[ease-in] shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
         newProduct.innerHTML = `
         <div class="h-2/5">
-            <img src="${data.productImage}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
+            <img src="${fileName}" alt="${fileName}" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
         </div>
         <div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
             <p class="font-bold text-white">${data.productName}</p>
             <p class="text-white">${data.productDescription}</p>
             <p class="text-white">${data.productBrand}</p>
-            <p class="font-bold text-white">${data.productPrice}</p>
+            <p class="font-bold text-white">${data.productPrice}$</p>
             <div class="flex justify-between">
                 <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
                 <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
@@ -208,16 +222,18 @@ console.log(e.target);
         productPrice: editPrice.value
     });
     console.log(data);
+    
+    const fileName = data.productImage.split('\\').pop();
     // Actualizar los datos del producto en la lista en el frontend
     li.innerHTML = `
     <div class="h-2/5">
-    <img src="${data.productImage}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
+    <img src="${fileName}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
 </div>
 <div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
     <p class="font-bold text-white">${data.productName}</p>
     <p class="text-white">${data.productDescription}</p>
     <p class="text-white">${data.productBrand}</p>
-    <p class="font-bold text-white">${data.productPrice}</p>
+    <p class="font-bold text-white">${data.productPrice}$</p>
     <div class="flex justify-between">
     <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
     <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
