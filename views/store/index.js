@@ -24,36 +24,42 @@ const updateCartTotal = () => {
     totalQuantityCart.textContent = quantity;
 };
 
-const buyProducts = async () => {
-    try {
-        
-        
-        // Crear un array de productos en el formato esperado por el esquema
-        const purchaseProducts = cartItems.map(item => ({
-            product: item.productId,
-            quantity: item.quantity
-        }));
-
-        // Realizar la compra con los productos en el carrito
-        const {data} = await axios.post('/api/purchases', {
-            products: purchaseProducts,
-            totalPrice: parseFloat(totalPriceCart.textContent)
-        });
-        console.log(data);
-        console.log(purchaseProducts);
-
-        // Limpiar el carrito después de realizar la compra
-        cartItems = [];
-        table.innerHTML = '';
-        updateCartTotal();
-
-        alert('Compra realizada con éxito');
-    } catch (error) {
-        console.error('Error al realizar la compra:', error);
-        alert('Error al realizar la compra');
-    }
+const cleanCartContent = () => {
+  table.innerHTML= '';
 };
 
+const buyProducts = async () => {
+  try {
+      if (cartItems.length === 0) {
+          Swal.fire("El carrito está vacío. Agrega productos antes de comprar.");
+          return;
+      }
+
+      // Crear un array de productos en el formato esperado por el esquema
+      const purchaseProducts = cartItems.map(item => ({
+          product: item.productId,
+          quantity: item.quantity
+      }));
+
+      // Realizar la compra con los productos en el carrito
+      const {data} = await axios.post('/api/purchases', {
+          products: purchaseProducts,
+          totalPrice: parseFloat(totalPriceCart.textContent)
+      });
+      console.log(data);
+      console.log(purchaseProducts);
+
+      // Limpiar el carrito después de realizar la compra
+      cartItems = [];
+      cleanCartContent();
+      updateCartTotal();
+
+      Swal.fire("Compra Realizada!!!");
+  } catch (error) {
+      console.error('Error al realizar la compra:', error);
+      alert('Error al realizar la compra');
+  }
+};
 
 const addProductToCart = (btn, productId, productName, productPrice) => {
     btn.addEventListener('click', () => {
@@ -72,6 +78,23 @@ const addProductToCart = (btn, productId, productName, productPrice) => {
                 quantity: 1
             });
         }
+        Toastify({
+            text: "PRODUCTO AGREGADO",
+            duration: 2000,
+            gravity: "top", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+              background: "linear-gradient(to right, #00b09b, #3730a3)",
+              borderRadius: "0.5rem",
+              font: ".75rem"
+            },
+            offset: {
+                x: '4rem', // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                y: '3rem' // vertical axis - can be a number or a string indicating unity. eg: '2em'
+              },
+            onClick: function(){} // Callback after click
+          }).showToast();
 
         // Actualizar la tabla del carrito
         renderCartItems();
@@ -80,41 +103,72 @@ const addProductToCart = (btn, productId, productName, productPrice) => {
 };
 
 const renderCartItems = () => {
-    table.innerHTML = '';
+  table.innerHTML = '';
 
-    cartItems.forEach(item => {
-        const newCartItem = document.createElement('tr');
-        newCartItem.innerHTML = `
-            <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productName}</td>
-            <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productPrice.toFixed(2)}$</td>
-            <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.quantity}</td>
-            <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid flex justify-center items-center ">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 remove-btn bg-white cursor-pointer transition-all duration-[0.3s] ease-[ease-in] text-red-600 p-2 rounded-[50%] hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in] hover:bg-red-600 hover:text-white">
-            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" /></svg>
-            </td>
-        `;
+  cartItems.forEach(item => {
+      const newCartItem = document.createElement('tr');
+      newCartItem.innerHTML = `
+          <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productName}</td>
+          <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.productPrice.toFixed(2)}$</td>
+          <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid">${item.quantity}</td>
+          <td class="h-24 font-bold px-0 py-4 border-b-[rgb(107,106,106)] border-b border-solid flex justify-center items-center ">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 remove-btn bg-white cursor-pointer transition-all duration-[0.3s] ease-[ease-in] text-red-600 p-2 rounded-[50%] hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in] hover:bg-red-600 hover:text-white">
+          <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" /></svg>
+          </td>
+      `;
 
-        table.appendChild(newCartItem);
-    });
+      table.appendChild(newCartItem);
 
-    // Agregar event listener para los botones de eliminar
-    const removeBtns = document.querySelectorAll('.remove-btn');
-    removeBtns.forEach((btn, index) => {
-        btn.addEventListener('click', () => {
-            cartItems.splice(index, 1); // Eliminar el producto del carrito
-            renderCartItems(); // Volver a renderizar la tabla del carrito
-            updateCartTotal(); // Actualizar el total del carrito
-        });
-    });
+      // Agregar event listener para el botón de eliminar
+      newCartItem.querySelector('.remove-btn').addEventListener('click', () => {
+          cartItems.splice(cartItems.indexOf(item), 1); // Eliminar el producto del carrito
+          renderCartItems(); // Volver a renderizar la tabla del carrito
+          updateCartTotal(); // Actualizar el total del carrito
+          Toastify({
+              text: "PRODUCTOS ELIMINADOS",
+              duration: 2000,
+              gravity: "top", // `top` or `bottom`
+              position: "right", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "linear-gradient(to right, #00b09b, #3730a3)",
+                borderRadius: "0.5rem",
+                font: ".75rem"
+              },
+              offset: {
+                  x: '4rem', // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                  y: '3rem' // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                },
+              onClick: function(){} // Callback after click
+            }).showToast();
+      });
+  });
 };
 
 // Modifica el EventListener del botón de compra en el carrito
 buyButton.addEventListener('click', () => {
-    buyProducts();
+  buyProducts();
 });
 
 btnClear.addEventListener('click', e =>{
-    table.innerHTML = '';
+  Swal.fire({
+    title: "¿Estas Seguro?",
+    icon: "question",
+    html: `
+      Todos tus productos en el carrito seran eliminados
+    `,
+    showCancelButton: true,
+    focusConfirm: false,
+    confirmButtonText: `SI`,
+    cancelButtonText: `NO`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      cartItems = [];
+  cleanCartContent();
+  updateCartTotal(); 
+    }
+  });
+
 });
 
 const loadProducts = async () => {
@@ -156,10 +210,7 @@ const toggleCartSection = () => {
     });
 };
 
-
-
 const navBar = document.querySelector('#nav-bar')
-
 const navBtn = document.querySelector('#nav-btn')
 
 const toggleMobileMenu = () => {

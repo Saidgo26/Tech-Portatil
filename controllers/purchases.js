@@ -21,9 +21,6 @@ purchasesRouter.post('/', async (request, response) => {
         user.purchase.push(savedPurchase._id);
         await user.save();
        
-
-
-
         return response.status(201).json(savedPurchase);
     } catch (error) {
         console.error('Error al crear la compra:', error);

@@ -29,6 +29,7 @@ try {
             newProduct.id = product.id;
        
             const fileName = product.productImage.split('\\').pop();
+            
           
             newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
             newProduct.innerHTML = `
