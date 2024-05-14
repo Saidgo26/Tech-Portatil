@@ -13,13 +13,21 @@
 
     </nav>
     
-    <!-- section info -->
-    <section class="pt-16 bg-cover bg-[url('/images/pc4.jpg')] md:bg-[url('/images/pc3.jpg')] md:bg-center  transition ease-in-out">
-    <div class="pt-16 h-screen flex justify-center items-center flex-col md:flex-row lg:3/5 md:w-9/12 mx-auto px-4 gap-4 md:gap-8 md:h-3/4 md:pb-16">
-        <h1 class="text-[white] font-bold text-4xl md:text-7xl">Admin, Bienvenido...</h1>
-  
-    </div>
-    </section>
+    <header class="pt-16">
+        <div
+          class="h-[350px] overflow-hidden md:bg-[url('/images/pc3.jpg')] bg-[url('/images/pc4.jpg')] bg-cover bg-[50%] bg-no-repeat">
+          <div
+            class="bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black/60 bg-fixed">
+            <div class="flex h-full items-center justify-center">
+              <div class="px-6 text-center text-white md:px-12">
+                <h1 class="mb-6 text-5xl font-bold">Bienvenido,</h1>
+                <h3 class="mb-8 text-3xl font-bold">Admin</h3>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
 
 <!-- section +info -->
     <section class="p-4 bg-[#105544]">
@@ -59,51 +67,182 @@
         </div>
     </section>
     <!-- add products -->
-    <section class="p-4  bg-slate-300">
+    <section class="p-4  bg-slate-300 h-auto w-full">
         <div id="container-products" class="lg:flex lg:justify-center lg:items-center lg:h-screen">
-            <div class="lg:w-3/4 lg:bg-slate-600 lg:rounded-md md:p-4">
-                <h3 class="font-bold text-2xl mb-4 text-center">Crear Nuevo Producto</h3>
-                <form id="productForm" class="flex flex-col gap-4">
-                    <label for="productName" class="font-bold md:px-24 xl:px-32">Nombre del Producto:</label>
-                    <input type="text" id="productName" name="productName" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
-                    
-                    <label for="productDescription" class="font-bold md:px-24 xl:px-32">Categoría:</label>
-                    <input type="text" id="productDescription" name="productDescription" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+            <div class=" lg:bg-slate-600 lg:rounded-md pt-2 pb-2">
+    <h3 class=" font-bold text-2xl mb-4 text-center">Crear Nuevo Producto</h3>
+    <form method="post" action="/api/products" enctype="multipart/form-data" id="productForm" class="flex flex-col gap-2">
         
-                    <label for="productBrand" class="font-bold md:px-24 xl:px-32">Marca:</label>
-                    <input type="text" id="productBrand" name="productBrand" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+        <label for="productName" class="font-bold md:px-24 xl:px-32">Nombre del Producto:</label>
+        <input type="text" id="productName" name="productName" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+
+        <label for="productDescription" class="font-bold md:px-24 xl:px-32">Categoría:</label>
+        <input type="text" id="productDescription" name="productDescription" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+
+        <label for="productBrand" class="font-bold md:px-24 xl:px-32">Marca:</label>
+        <select id="productBrand" name="productBrand" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+            <option selected disabled value="">Seleccione una Marca</option>
+            <option value="Dell">Dell</option>
+            <option value="Lenovo">Lenovo</option>
+            <option value="Gateway">Gateway</option>
+        </select>
+
+        <label  class="font-bold md:px-24 xl:px-32">Precio, Cantidad:</label>
+        <div class="flex gap-4 md:px-24 xl:px-32 flex-col md:flex-row">
+        <input type="number" id="productPrice" name="productPrice" required step="0.01" class="p-2 border border-gray-300 rounded-md md:w-1/2 md:self-center">
+      
+        <input type="number" id="productQuantity" name="productQuantity" required class="p-2 border border-gray-300 rounded-md md:w-1/2 md:self-center" min="1" max="100">
+
+        </div>
         
-                    <label for="productPrice" class="font-bold md:px-24 xl:px-32">Precio:</label>
-                    <input type="number" id="productPrice" name="productPrice" required step="0.01" class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+
         
-                    <label for="productImage" class="font-bold md:px-24 xl:px-32">Imagen:</label>
-                    <input type="file" id="productImage" name="productImage" accept="image/*" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center bg-white">
-        
-                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 md:w-3/4 md:self-center">Crear Producto</button>
-                </form>
-            </div>
+
+        <label class="font-bold md:px-24 xl:px-32">Procesador, Gráficos, Memoria:</label>
+        <div class="flex gap-4 md:px-24 xl:px-32 flex-col md:flex-row">
+            <select id="processor" name="processor" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                <option selected disabled value="">Seleccione un Procesador</option>
+                <option value="Ryzen">Ryzen</option>
+                <option value="Intel">Intel</option>
+            </select>
+
+            <select id="graphics" name="graphics" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                <option selected disabled value="">Seleccione los graphics</option>
+                <option value="Integrados">Integrados</option>
+                <option value="Dedicados">Dedicados</option>
+            </select>
+
+            <select id="memory" name="memory" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                <option selected disabled value="">Seleccione la memoria</option>
+                <option value="4GB">4GB</option>
+                <option value="8GB">8GB</option>
+                <option value="16GB">16GB</option>
+                <option value="32GB">32GB</option>
+            </select>
+        </div>
+
+        <label class="font-bold md:px-24 xl:px-32">Almacenamiento, Pantalla, Sistema Operativo:</label>
+        <div class="flex gap-4 md:px-24 xl:px-32 flex-col md:flex-row">
+            <select id="storage" name="storage" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                <option selected disabled value="">Seleccione el Almacenamiento</option>
+                <option value="120GB">120GB</option>
+                <option value="256GB">256GB</option>
+                <option value="500GB">500GB</option>
+                <option value="1TB">1TB</option>
+                <option value="2TB">2TB</option>
+            </select>
+
+            <select id="screen" name="screen" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                <option selected disabled value="">Seleccione la Pantalla</option>
+                <option value="11">11"</option>
+                <option value="12">12"</option>
+                <option value="13">13"</option>
+                <option value="14">14"</option>
+                <option value="15">15"</option>
+                <option value="16">16"</option>
+            </select>
+
+            <select id="os" name="os" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                <option selected disabled value="">Seleccione el OS</option>
+                <option value="Win10 pro">Win10 pro</option>
+                <option value="Win 10 Home">Win 10 Home</option>
+                <option value="Win11 Home">Win11 Home</option>
+                <option value="Win11 Pro">Win11 Pro</option>
+            </select>
+        </div>
+
+        <label for="productImage" class="font-bold md:px-24 xl:px-32">Imagen:</label>
+        <input type="file" id="productImage" name="productImage" accept="image/*" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center bg-white">
+
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 md:w-3/4 md:self-center">Crear Producto</button>
+    </form>
+</div>
         </div>
         <div id="edit-container-product" class="hidden lg:hidden lg:justify-center lg:items-center lg:h-screen">
             <div class="lg:w-3/4 lg:bg-slate-600 lg:rounded-md md:p-4" >
                 <h3 class="font-bold text-2xl mb-4 text-center">Edita el producto</h3>
-                <form id="editProductForm" class="flex flex-col gap-4 ">
+                <form id="editProductForm" class="flex flex-col gap-2 ">
                     <label for="editProductName" class="font-bold md:px-24 xl:px-32">Nombre del Producto:</label>
                     <input type="text" id="editProductName" name="editProductName" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
-            
+                
                     <label for="editProductDescription" class="font-bold md:px-24 xl:px-32">Categoría:</label>
                     <input type="text" id="editProductDescription" name="editProductDescription" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
-            
+                
                     <label for="editProductBrand" class="font-bold md:px-24 xl:px-32">Marca:</label>
-                    <input type="text" id="editProductBrand" name="editProductBrand" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
+                    <select id="editProductBrand" name="editProductBrand" required class="p-2 border border-gray-300 rounded-md md:w-1/2 md:self-center">
+                        <option selected disabled value="">Seleccione una Marca</option>
+                        <option value="Dell">Dell</option>
+                        <option value="Lenovo">Lenovo</option>
+                        <option value="Gateway">Gateway</option>
+                    </select>
+                
+                    <label  class="font-bold md:px-24 xl:px-32">Precio, Cantidad:</label>
+                    <div class="flex gap-4 md:px-24 xl:px-32 flex-col md:flex-row">
+                    <input type="number" id="editProductPrice" name="editProductPrice" required step="0.01" class="p-2 border border-gray-300 rounded-md md:w-1/2 md:self-center">
+                  
+                    <input type="number" id="editProductQuantity" name="editProductQuantity" required class="p-2 border border-gray-300 rounded-md md:w-1/2 md:self-center" min="1" max="100">
             
-                    <label for="editProductPrice" class="font-bold md:px-24 xl:px-32">Precio:</label>
-                    <input type="number" id="editProductPrice" name="editProductPrice" required step="0.01" class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center">
-            
+                    </div>
+                
+                    <label class="font-bold md:px-24 xl:px-32">Procesador, Gráficos, Memoria:</label>
+                    <div class="flex gap-4 md:px-24 xl:px-32 flex-col md:flex-row">
+                        <select id="editProcessor" name="editProcessor" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                            <option selected disabled value="">Seleccione un Procesador</option>
+                            <option value="Ryzen">Ryzen</option>
+                            <option value="Intel">Intel</option>
+                        </select>
+                
+                        <select id="editGraphics" name="editGraphics" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                            <option selected disabled value="">Seleccione los graphics</option>
+                            <option value="Integrados">Integrados</option>
+                            <option value="Dedicados">Dedicados</option>
+                        </select>
+                
+                        <select id="editMemory" name="editMemory" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                            <option selected disabled value="">Seleccione la memoria</option>
+                            <option value="4GB">4GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                        </select>
+                    </div>
+                
+                    <label class="font-bold md:px-24 xl:px-32">Almacenamiento, Pantalla, Sistema Operativo:</label>
+                    <div class="flex gap-4 md:px-24 xl:px-32 flex-col md:flex-row">
+                        <select id="editStorage" name="editStorage" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                            <option selected disabled value="">Seleccione el Almacenamiento</option>
+                            <option value="120GB">120GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="500GB">500GB</option>
+                            <option value="1TB">1TB</option>
+                            <option value="2TB">2TB</option>
+                        </select>
+                
+                        <select id="editScreen" name="editScreen" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                            <option selected disabled value="">Seleccione la Pantalla</option>
+                            <option value="11">11"</option>
+                            <option value="12">12"</option>
+                            <option value="13">13"</option>
+                            <option value="14">14"</option>
+                            <option value="15">15"</option>
+                            <option value="16">16"</option>
+                        </select>
+                
+                        <select id="editOS" name="editOS" required class="p-2 border border-gray-300 rounded-md md:w-1/3">
+                            <option selected disabled value="">Seleccione el OS</option>
+                            <option value="Win10 pro">Win10 pro</option>
+                            <option value="Win 10 Home">Win 10 Home</option>
+                            <option value="Win11 Home">Win11 Home</option>
+                            <option value="Win11 Pro">Win11 Pro</option>
+                        </select>
+                    </div>
+                
                     <label for="editProductImage" class="font-bold md:px-24 xl:px-32">Imagen:</label>
                     <input type="file" id="editProductImage" name="editProductImage" accept="image/*" required class="p-2 border border-gray-300 rounded-md md:w-3/4 md:self-center bg-white">
-            
-                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 md:w-3/4 md:self-center ">Guardar Producto</button>
+                
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300 md:w-3/4 md:self-center">Guardar Producto</button>
                 </form>
+                
             </div>
             </div>
             
@@ -120,7 +259,7 @@
     </div>
 </section>
 <!-- Section Purchase -->
-<section class="min-h-screen flex justify-center items-center px-4 py-0 bg-slate-300">
+<!-- <section class="min-h-screen flex justify-center items-center px-4 py-0 bg-slate-300">
     <div class="max-w-screen-xl w-full mx-auto my-0">
         <h3 class="font-bold text-[2rem] text-center p-4">Compras</h3>
         <ul id="listPurchases" class="flex flex-col justify-center items-center gap-8 m-0 px-0 py-4 md:flex-row flex-wrap lg:gap-12">
@@ -128,7 +267,191 @@
         </ul>
         
     </div>
-</section>
+</section> -->
+
+    <!-- Footer container -->
+    <footer
+    class="bg-neutral-700 text-center text-surface/75 text-emerald-50 lg:text-left">
+    <div
+      class="flex items-center justify-center border-b-2 border-neutral-200 p-6 dark:border-white/10 lg:justify-between">
+      <div class="me-12 hidden lg:block">
+        <span>Mantente al tanto en nuestras redes sociales:</span>
+      </div>
+      <!-- Social network icons container -->
+      <div class="flex justify-center">
+        <a href="#!" class="me-6 [&>svg]:h-4 [&>svg]:w-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 320 512">
+            
+            <path
+              d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z" />
+          </svg>
+        </a>
+        <a href="#!" class="me-6 [&>svg]:h-4 [&>svg]:w-4 ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 512 512">
+            
+            <path
+              d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+          </svg>
+        </a>
+        <a href="#!" class="me-6 [&>svg]:h-4 [&>svg]:w-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 488 512">
+            
+            <path
+              d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+          </svg>
+        </a>
+        <a href="#!" class="me-6 [&>svg]:h-4 [&>svg]:w-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 448 512">
+            
+            <path
+              d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+          </svg>
+        </a>
+      
+      </div>
+    </div>
+  
+    <!-- Main container div: holds the entire content of the footer, including four sections (TW Elements, Products, Useful links, and Contact), with responsive styling and appropriate padding/margins. -->
+    <div class="mx-6 py-10 text-center md:text-left">
+      <div class="grid-1 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <!-- TW Elements section -->
+        <div class="">
+          <h6
+            class="mb-4 flex items-center justify-center font-semibold uppercase md:justify-start">
+            <span class="me-3 [&>svg]:h-4 [&>svg]:w-4">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M128 32C92.7 32 64 60.7 64 96V352h64V96H512V352h64V96c0-35.3-28.7-64-64-64H128zM19.2 384C8.6 384 0 392.6 0 403.2C0 445.6 34.4 480 76.8 480H563.2c42.4 0 76.8-34.4 76.8-76.8c0-10.6-8.6-19.2-19.2-19.2H19.2z"/>
+              </svg>
+            </span>
+            TP Tech-Portatil
+          </h6>
+          <p>
+              ¡Bienvenido a TechPortatil! Somos tu portal de confianza dedicado a ayudarte a encontrar los mejores precios y equipos en el mercado de la tecnología portátil.
+          </p>
+        </div>
+       
+      
+       
+          <!-- Horarios -->
+          <div>
+              <h5 class="text-uppercase mb-4">Horarios de atencion</h5>
+              <table class="table text-center text-white">
+                  <tbody class="font-weight-normal">
+                      <tr>
+                          <td>Lun - Jue:</td>
+                          <td>8am - 8pm</td>
+                      </tr>
+                      <tr>
+                          <td>Vie - Sab:</td>
+                          <td>9am - 6pm</td>
+                      </tr>
+                      <tr>
+                          <td>Domingos:</td>
+                          <td>8am - 6pm</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+  
+          <!-- info section -->
+         <div class="">
+          <h6
+            class="mb-4 flex items-center justify-center font-semibold uppercase md:justify-start">
+           
+            Info!
+          </h6>
+          <p>
+            Nuestros Horarios de atencion corresponden a 
+            la hora en la que se contestan email.
+          </p>
+        </div>
+        <!-- Contact section -->
+        <div>
+          <h6
+            class="mb-4 flex justify-center font-semibold uppercase md:justify-start">
+            Contactanos
+          </h6>
+          <p class="mb-4 flex items-center justify-center md:justify-start">
+            <span class="me-3 [&>svg]:h-5 [&>svg]:w-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor">
+                <path
+                  d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                <path
+                  d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+              </svg>
+            </span>
+            Blvr. de Sabana Grande, <br> Caracas 1050, Distrito Capital
+          </p>
+          <p class="mb-4 flex items-center justify-center md:justify-start">
+            <span class="me-3 [&>svg]:h-5 [&>svg]:w-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor">
+                <path
+                  d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                <path
+                  d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+              </svg>
+            </span>
+            TechPortatil@gmail.com
+          </p>
+          <p class="mb-4 flex items-center justify-center md:justify-start">
+            <span class="me-3 [&>svg]:h-5 [&>svg]:w-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z"
+                  clip-rule="evenodd" />
+              </svg>
+            </span>
+            +58 424 200 23 90
+          </p>
+          <p class="flex items-center justify-center md:justify-start">
+            <span class="me-3 [&>svg]:h-5 [&>svg]:w-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  d="M7.875 1.5C6.839 1.5 6 2.34 6 3.375v2.99c-.426.053-.851.11-1.274.174-1.454.218-2.476 1.483-2.476 2.917v6.294a3 3 0 003 3h.27l-.155 1.705A1.875 1.875 0 007.232 22.5h9.536a1.875 1.875 0 001.867-2.045l-.155-1.705h.27a3 3 0 003-3V9.456c0-1.434-1.022-2.7-2.476-2.917A48.716 48.716 0 0018 6.366V3.375c0-1.036-.84-1.875-1.875-1.875h-8.25zM16.5 6.205v-2.83A.375.375 0 0016.125 3h-8.25a.375.375 0 00-.375.375v2.83a49.353 49.353 0 019 0zm-.217 8.265c.178.018.317.16.333.337l.526 5.784a.375.375 0 01-.374.409H7.232a.375.375 0 01-.374-.409l.526-5.784a.373.373 0 01.333-.337 41.741 41.741 0 018.566 0zm.967-3.97a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H18a.75.75 0 01-.75-.75V10.5zM15 9.75a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V10.5a.75.75 0 00-.75-.75H15z"
+                  clip-rule="evenodd" />
+              </svg>
+            </span>
+            +58 424 200 23 90
+          </p>
+        </div>
+      </div>
+    </div>
+  
+    <!--Copyright section-->
+    <div class="bg-black/5 p-6 text-center">
+      <span>© 2024 TechPortatil. Todos los derechos reservados.:</span>
+      <a class="font-semibold" href="https://tw-elements.com/"
+        >TW Elements</a
+      >
+    </div>
+  </footer>
+
+
 
 <script src="index.js"></script>
 <script type="module" src="/components/nav.js"></script>

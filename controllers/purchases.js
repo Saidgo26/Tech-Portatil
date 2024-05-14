@@ -1,23 +1,34 @@
 const purchasesRouter = require('express').Router();
+const Product = require('../models/product');
 const Purchase = require('../models/purchase');
 
+
 purchasesRouter.post('/', async (request, response) => {
-    
     try {
         const user = request.user;
-        const { products, totalPrice} = request.body;
+        const { products, totalPrice } = request.body;
 
-        // Crea una nueva instancia de Purchase con los datos recibidos
+        // Crear una nueva instancia de Purchase con los datos recibidos
         const newPurchase = new Purchase({
             products,
             totalPrice,
             user: user._id
         });
 
-        // Guarda la nueva compra en la base de datos
+        // Guardar la nueva compra en la base de datos
         const savedPurchase = await newPurchase.save();
 
-        // Agrega la compra al usuario
+        // Actualizar la cantidad de productos en la base de datos
+        for (const product of products) {
+            const purchasedProduct = await Product.findById(product.product);
+            if (!purchasedProduct) {
+                return response.status(404).json({ error: 'Producto no encontrado' });
+            }
+            purchasedProduct.quantity -= product.quantity;
+            await purchasedProduct.save();
+        }
+
+        // Agregar la compra al usuario
         user.purchase.push(savedPurchase._id);
         await user.save();
        
@@ -28,10 +39,14 @@ purchasesRouter.post('/', async (request, response) => {
     }
 });
 
+
+
 purchasesRouter.get('/', async (request, response) => {
     try {
-        // Obtener todas las compras de la base de datos
-        const purchases = await Purchase.find();
+        const userId = request.user._id; 
+
+        // Obtener todas las compras del usuario de la base de datos
+        const purchases = await Purchase.find({ user: userId });
 
         // Devolver las compras en formato JSON
         return response.status(200).json(purchases);
@@ -42,20 +57,7 @@ purchasesRouter.get('/', async (request, response) => {
 });
 
 
-purchasesRouter.get('/:id', async (request, response) => {
 
-    try {
-        const userId = request.user
-    
-        // Obtener todas las compras del usuario de la base de datos
-        const purchase = await Purchase.find({ user: userId });
-        // Devolver las compras en formato JSON
-        return response.status(200).json(purchase);
-    } catch (error) {
-        console.error('Error al obtener las compras:', error);
-        return response.status(500).json({ error: 'Error al obtener las compras' });
-    }
-});
 
 purchasesRouter.delete('/:id', async (request, response) => {
     try {

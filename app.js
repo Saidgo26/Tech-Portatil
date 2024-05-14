@@ -37,6 +37,8 @@ app.use('/login', express.static(path.resolve('views', 'login')));
 app.use('/styles', express.static(path.resolve('views', 'styles')));
 app.use('/store', express.static(path.resolve('views', 'store')));
 app.use('/admin', express.static(path.resolve('views', 'admin')));
+app.use('/pago', express.static(path.resolve('views', 'pagos')));
+app.use('/product', express.static(path.resolve('views', 'product')));
 app.use('/components', express.static(path.resolve('views', 'components')));
 app.use('/verify/:id/:token', express.static(path.resolve('views', 'verify')));
 app.use('/images', express.static(path.resolve('img')));
@@ -48,8 +50,9 @@ app.use(morgan('tiny'));
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/logout', logoutRouter);
-app.use('/api/products', userExtractor, productsRouter);
+app.use('/api/products',  productsRouter);
 app.use('/api/purchases', userExtractor, purchasesRouter);
+
 
 
 

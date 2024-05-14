@@ -2,6 +2,10 @@ const productsRouter = require('express').Router();
 const User = require('../models/user');
 const Product = require('../models/product');
 
+
+
+
+
 productsRouter.get('/', async (request, response) => {
     try {
         const products = await Product.find();
@@ -27,22 +31,28 @@ productsRouter.get('/:id', async (request, response) => {
 
 productsRouter.post('/', async (request, response) => {
     try {
-        const { productImage, productName, productDescription, productBrand, productPrice } = request.body;
-        console.log(request.body);
+        const { productName, productDescription, productBrand, productPrice, productImage, productSpecifications, quantity } = request.body;
+
         const newProduct = new Product({
             productImage,
             productName,
             productDescription,
             productBrand,
-            productPrice
+            productPrice,
+            productSpecifications,
+            quantity
         });
+
         const savedProduct = await newProduct.save();
         return response.status(201).json(savedProduct);
     } catch (error) {
         console.error('No se ha podido crear el Producto:', error);
-        response.status(500).json({ error: 'Error, Error' });
+        return response.status(500).json({ error: 'Error al crear el producto' });
     }
 });
+
+
+
 
 productsRouter.delete('/:id', async (request, response) => {
     try {
@@ -73,7 +83,7 @@ productsRouter.delete('/:id', async (request, response) => {
 
 productsRouter.patch('/:id', async (request, response) => {
     const productId = request.params.id;
-    const { productImage, productName, productDescription, productBrand, productPrice } = request.body;
+    const { productImage, productName, productDescription, productBrand, productPrice , productSpecifications, quantity } = request.body;
 
     try {
         const updatedProduct = await Product.findByIdAndUpdate(productId, {
@@ -81,7 +91,9 @@ productsRouter.patch('/:id', async (request, response) => {
             productName,
             productDescription,
             productBrand,
-            productPrice
+            productPrice, 
+            productSpecifications, 
+            quantity
         }, { new: true });
 
         return response.status(200).json(updatedProduct);

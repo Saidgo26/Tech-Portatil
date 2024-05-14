@@ -1,15 +1,29 @@
 const form = document.querySelector('#productForm');
+const list = document.querySelector('#listProducts');
 const nameProduct = document.querySelector('#productName');
 const description = document.querySelector('#productDescription');
 const brand = document.querySelector('#productBrand');
 const price = document.querySelector('#productPrice');
+const quantity = document.querySelector('#productQuantity');
 const image = document.querySelector('#productImage');
-const list = document.querySelector('#listProducts');
+const processor = document.querySelector('#processor');
+const graphics = document.querySelector('#graphics');
+const memory = document.querySelector('#memory');
+const storage = document.querySelector('#storage');
+const screen = document.querySelector('#screen');
+const os = document.querySelector('#os');
+const editProcessor = document.querySelector('#editProcessor');
+const editGraphics = document.querySelector('#editGraphics');
+const editMemory = document.querySelector('#editMemory');
+const editStorage = document.querySelector('#editStorage');
+const editScreen = document.querySelector('#editScreen');
+const editOS = document.querySelector('#editOS');
 const editForm = document.querySelector('#editProductForm');
 const editNameProduct = document.querySelector('#editProductName');
 const editDescription = document.querySelector('#editProductDescription');
 const editBrand = document.querySelector('#editProductBrand');
 const editPrice = document.querySelector('#editProductPrice');
+const editQuantity = document.querySelector('#editProductQuantity');
 const editImage = document.querySelector('#editProductImage');
 const containerProducts = document.querySelector('#container-products');
 const editContainerProducts = document.querySelector('#edit-container-product');
@@ -26,28 +40,28 @@ try {
 
         data.forEach(product => {
             const newProduct = document.createElement('li');
-            newProduct.id = product.id;
-       
             const fileName = product.productImage.split('\\').pop();
-            
-          
-            newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
+            newProduct.id = product.id;
+            newProduct.className = '';
+        
             newProduct.innerHTML = `
-            <div class="h-2/5">
-                <img src="/images/${fileName}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
+            <div class="bg-green-200 rounded-lg overflow-hidden shadow-lg max-w-sm w-96">
+            <div class="h-80">
+              <img class="w-full h-full object-cover" src="/images/${fileName}" alt="Product Image">
             </div>
-            <div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
-                <p class="font-bold text-white">${product.productName}</p>
-                <p class="text-white">${product.productDescription}</p>
-                <p class="text-white">${product.productBrand}</p>
-                <p class="font-bold text-white">${product.productPrice}$</p>
-                <div class="flex justify-between">
+            <div class="p-4">
+              <h3 class="text-lg font-medium mb-2">${product.productName}</h3>
+              <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productProcessor}</p>
+              <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productOs}</p>
+              <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productStorage}</p>
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-lg">$${product.productPrice}</span>
                 <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
-                <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
+    <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
+              </div>
             </div>
-            </div>
-
-            `;
+          </div>
+    `;
             list.append(newProduct);
         });
 } catch (error) {
@@ -57,8 +71,10 @@ try {
 })();
 
 (async () => {
+    localStorage.removeItem('productDetails');
     const { data } = await axios.get('/api/purchases', {
         withCredentials: true,
+        
     });
     try {
         for (const purchase of data) {
@@ -139,48 +155,75 @@ try {
 
 
 // Evento en el formulario de creación para agregar un producto a la BD
-form.addEventListener('submit', async e => {
-    e.preventDefault();
-    try {
-        const { data } = await axios.post('/api/products', {
-            productImage: image.value,
-            productName: nameProduct.value,
-            productDescription: description.value,
-            productBrand: brand.value,
-            productPrice: price.value
-        });
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+            let Specifications = [];
 
-        // Crear un nuevo elemento de lista con los datos del producto y agregarlo a la lista en el frontend
-        const newProduct = document.createElement('li');
-       
-        newProduct.id = data._id;
-        const fileName = data.productImage.split('\\').pop();
-        newProduct.className = 'bg-zinc-100 h-80 flex flex-col w-full transition-all duration-[0.3s] ease-[ease-in] shadow-md rounded-lg md:w-2/5 lg:w-[30%]';
-        newProduct.innerHTML = `
-        <div class="h-2/5">
-            <img src="${fileName}" alt="${fileName}" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
-        </div>
-        <div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
-            <p class="font-bold text-white">${data.productName}</p>
-            <p class="text-white">${data.productDescription}</p>
-            <p class="text-white">${data.productBrand}</p>
-            <p class="font-bold text-white">${data.productPrice}$</p>
-            <div class="flex justify-between">
-                <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
-                <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
+            Specifications.push({
+                        productProcessor: processor.value,
+                        productGraphics: graphics.value,
+                        productMemory: memory.value,
+                        productStorage: storage.value,
+                        productScreen: screen.value,
+                        productOs: os.value
+            });
+
+
+            const { data } = await axios.post('/api/products', {
+                productImage: image.value,
+                productName: nameProduct.value,
+                productDescription: description.value,
+                productBrand: brand.value,
+                productPrice: price.value,
+                productSpecifications : Specifications,
+                quantity: quantity.value
+            });
+            console.log(data);
+
+            // Crear un nuevo elemento de lista con los datos del producto y agregarlo a la lista en el frontend
+            const newProduct = document.createElement('li');
+    newProduct.id = data._id;
+    const fileName = data.productImage.split('\\').pop();
+            newProduct.id = data.id;
+            newProduct.className = '';
+        
+            newProduct.innerHTML = `
+            <div class="bg-green-200 rounded-lg overflow-hidden shadow-lg max-w-sm w-96">
+            <div class="h-80">
+              <img class="w-full h-full object-cover" src="/images/${fileName}" alt="Product Image">
             </div>
-        </div>
-        `;
-        list.appendChild(newProduct);
-        nameProduct.value = '';
-        description.value = '';
-        brand.value = '';
-        price.value = '';
-        image.value = '';
-    } catch (error) {
-        console.error('No se ha podido crear el Producto:', error);
-    }
-});
+            <div class="p-4">
+              <h3 class="text-lg font-medium mb-2">${data.productName}</h3>
+              <p class="text-gray-600 text-sm mb-4">${data.productSpecifications[0].productProcessor}</p>
+              <p class="text-gray-600 text-sm mb-4">${data.productSpecifications[0].productOs}</p>
+              <p class="text-gray-600 text-sm mb-4">${data.productSpecifications[0].productStorage}</p>
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-lg">$${data.productPrice}</span>
+                <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
+    <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
+              </div>
+            </div>
+          </div>
+    `;
+
+    list.appendChild(newProduct);
+    nameProduct.value = '';
+    description.value = '';
+    brand.value = '';
+    price.value = '';
+    image.value = '';
+    processor.value = '';
+    graphics.value='';
+    memory.value='';
+    storage.value='';
+    screen.value= '';
+    os.value= '';
+    Specifications = [];
+        } catch (error) {
+            console.error('No se ha podido crear:', error);
+        }
+    });
 
 
 
@@ -189,58 +232,83 @@ list.addEventListener('click', async e => {
 
 if (e.target.closest('.delete-product-btn')) {
     // Eliminar producto
-    const li = e.target.closest('.delete-product-btn').parentElement.parentElement.parentElement;
+    const li = e.target.closest('.delete-product-btn').parentElement.parentElement.parentElement.parentElement;
     await axios.delete(`/api/products/${li.id}`);
     li.remove();
     console.log('si');
 }
 if (e.target.closest('.edit-product-btn')) {
 // Mostrar formulario de edición y cargar datos del producto seleccionado
-console.log(e.target);
+
     containerProducts.classList.add('hidden', 'lg:hidden');
     containerProducts.classList.remove('lg:flex');
-    const li = e.target.closest('.edit-product-btn').parentElement.parentElement.parentElement;
+    const li = e.target.closest('.edit-product-btn').parentElement.parentElement.parentElement.parentElement;
     const productId = li.id
     console.log(productId);
     const {data} = await axios.get(`/api/products/${productId}`,{
         withCredentials: true,
     });
-    console.log(data.product);
+    // console.log(data.product.productSpecifications[0].productGraphics);
     editNameProduct.value = data.product.productName;
     editDescription.value = data.product.productDescription;
     editBrand.value = data.product.productBrand;
     editPrice.value = data.product.productPrice;
+    editQuantity.value = data.product.quantity;
+    editProcessor.value = data.product.productSpecifications[0].productProcessor;
+    editGraphics.value = data.product.productSpecifications[0].productGraphics;
+    editMemory.value = data.product.productSpecifications[0].productMemory;
+    editStorage.value = data.product.productSpecifications[0].productStorage;
+    editScreen.value = data.product.productSpecifications[0].productScreen;
+    editOS.value = data.product.productSpecifications[0].productOs;
     editContainerProducts.classList.remove('hidden', 'lg:hidden');
     editContainerProducts.classList.add('lg:flex');
 
-    editForm.addEventListener('submit', async (e) => {
+    editForm.addEventListener('submit', async (e) => {    
     e.preventDefault();
+    let editSpecifications = [];
+
+    editSpecifications.push({
+                productProcessor: editProcessor.value,
+                productGraphics: editGraphics.value,
+                productMemory: editMemory.value,
+                productStorage: editStorage.value,
+                productScreen: editScreen.value,
+                productOs: editOS.value
+    });
+
+
     const { data } = await axios.patch(`/api/products/${productId}`, {
         productImage: editImage.value,
         productName: editNameProduct.value,
         productDescription: editDescription.value,
         productBrand: editBrand.value,
-        productPrice: editPrice.value
+        productPrice: editPrice.value,
+        productSpecifications : editSpecifications,
+        quantity: editQuantity.value,
     });
-    console.log(data);
+    console.log(editProcessor.value, editGraphics.value, editMemory.value,  editStorage.value, editScreen.value , editOS.value);
     
     const fileName = data.productImage.split('\\').pop();
     // Actualizar los datos del producto en la lista en el frontend
     li.innerHTML = `
-    <div class="h-2/5">
-    <img src="${fileName}" alt="" class="w-full h-full object-cover rounded-[0.5rem_0.5rem_0_0]">
-</div>
-<div class="h-3/5 flex flex-col justify-between text-xl p-4 bg-slate-500 rounded-b-md">
-    <p class="font-bold text-white">${data.productName}</p>
-    <p class="text-white">${data.productDescription}</p>
-    <p class="text-white">${data.productBrand}</p>
-    <p class="font-bold text-white">${data.productPrice}$</p>
-    <div class="flex justify-between">
-    <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
-    <button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
-</div>
-</div>
-    `
+    <div class="bg-green-200 rounded-lg overflow-hidden shadow-lg max-w-sm w-96">
+    <div class="h-80">
+      <img class="w-full h-full object-cover" src="/images/${fileName}" alt="Product Image">
+    </div>
+    <div class="p-4">
+      <h3 class="text-lg font-medium mb-2">${data.productName}</h3>
+      <p class="text-gray-600 text-sm mb-4">${data.productSpecifications[0].productProcessor}</p>
+      <p class="text-gray-600 text-sm mb-4">${data.productSpecifications[0].productOs}</p>
+      <p class="text-gray-600 text-sm mb-4">${data.productSpecifications[0].productStorage}</p>
+      <div class="flex items-center justify-between">
+        <span class="font-bold text-lg">$${data.productPrice}</span>
+        <button class="delete-product-btn font-bold bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Eliminar</button>
+<button class="edit-product-btn font-bold bg-blue-500 text-white cursor-pointer p-2 rounded-lg hover:bg-blue-600 hover:transition-all hover:duration-[0.3s] hover:ease-[ease-in]">Editar</button>
+      </div>
+    </div>
+  </div>
+`
+    
     editContainerProducts.classList.add('hidden', 'lg:hidden');
     editContainerProducts.classList.remove('lg:flex');
     containerProducts.classList.remove('hidden', 'lg:hidden')

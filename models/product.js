@@ -20,6 +20,38 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    productSpecifications:[{
+
+        productProcessor: {
+            type: String,
+            required: true
+        },
+        productGraphics: {
+            type: String,
+            required: true
+        },
+        productMemory: {
+            type: String,
+            required: true
+        },
+        productStorage: {
+            type: String,
+            required: true,
+        },
+        productScreen: {
+            type: Number,
+            required: true,
+        },
+        productOs: {
+            type: String,
+            required: true,
+        }
+    }],
+    quantity: {
+        type: Number,
+        required: true,
+        default: 1
+    },
     admin:{
         type: mongoose.Schema.Types.ObjectId,
         ref:'Admin'
