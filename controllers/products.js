@@ -13,7 +13,7 @@ productsRouter.get('/download-inventory', async (req, res) => {
             return res.status(404).json({ error: 'No hay productos disponibles' });
         }
 
-        const fields = ['productName', 'productDescription', 'productBrand', 'productPrice', 'quantity', 'createdAt', 'updatedAt'];
+        const fields = ['productName', 'productPrice', 'quantity', 'createdAt', 'updatedAt'];
         const opts = { fields };
         const parser = new Parser(opts);
         const csv = parser.parse(products);
