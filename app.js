@@ -48,7 +48,7 @@ app.use('/images', express.static(path.resolve('img')));
 app.use(morgan('tiny'));
 
 // Rustas BE
-app.use('/api/users', usersRouter);
+app.use('/api/users', userExtractor,usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/logout', logoutRouter);
 app.use('/api/products',  productsRouter);

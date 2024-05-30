@@ -358,3 +358,4 @@ renderProduct();
 toggleMobileMenu();
 toggleCartSection();
 
+

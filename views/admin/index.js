@@ -51,6 +51,7 @@ try {
             </div>
             <div class="p-4">
               <h3 class="text-lg font-medium mb-2">${product.productName}</h3>
+              <p class= text-md font-semibold mb-4">Disponible(s):${product.quantity}</p>
               <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productProcessor}</p>
               <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productOs}</p>
               <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productStorage}</p>
@@ -70,86 +71,103 @@ try {
 }
 })();
 
+document.getElementById('download-inventory-btn').addEventListener('click', () => {
+    window.location.href = '/api/products/download-inventory'; // Asegúrate de que la ruta es correcta
+});
+
 (async () => {
     localStorage.removeItem('productDetails');
-    const { data } = await axios.get('/api/purchases', {
-        withCredentials: true,
-        
-    });
     try {
-        for (const purchase of data) {
-            const validation = purchase.validated;
-            console.log();
-            // Obtener el nombre del usuario
+        const { data } = await axios.get('/api/purchases', { withCredentials: true });
 
-            const userResponse = await axios.get(`/api/users/${purchase.user}`);
-            const userName = userResponse.data.name;
+        // Crear la estructura de la tabla
+        const table = document.createElement('div');
+        table.classList.add('overflow-x-auto');
+
+        const innerTable = document.createElement('table');
+        innerTable.classList.add('min-w-full', 'divide-y', 'divide-gray-200', 'bg-gray-900', 'text-white', 'rounded-lg', 'shadow-lg');
+        innerTable.innerHTML = `
+            <thead class="bg-gray-700">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nombre del Usuario</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Productos</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Precio Total</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Confirmación de Pago</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Confirmación de Envío</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+            </tbody>
+        `;
+
+        const tableBody = innerTable.querySelector('tbody');
+
+        for (const purchase of data) {
+            const paymentValidation = purchase.paymentValidated;
+            const shippingValidation = purchase.shipped;
+            const userName = purchase.user.name; // Supongo que has poblado el campo 'user' en el backend
 
             // Obtener los nombres de los productos y sus cantidades
             const productDetails = [];
             for (const productInfo of purchase.products) {
                 const productResponse = await axios.get(`/api/products/${productInfo.product}`);
                 const productName = productResponse.data.product.productName;
-                // console.log(productResponse.data.product.productName);
                 productDetails.push({
                     name: productName,
                     quantity: productInfo.quantity
                 });
             }
 
-            // Crear elementos HTML para mostrar la compra
-            const newPurchase = document.createElement('li');
-            const trueIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500">
-            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-            </svg>
-            `;
-            const falseIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6  text-red-600">
-            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-          </svg>
-            `
-            newPurchase.id = purchase.id;
-            newPurchase.innerHTML = `
-                <div class="bg-gray-900 p-4 rounded-lg shadow-lg">
-                    <p class="text-gray-300"><b>Nombre del Usuario:</b> ${userName}</p>
-                    <p class="text-gray-300"><b>Productos:</b></p>
+            // Crear fila de la tabla para mostrar la compra
+            const newRow = document.createElement('tr');
+            newRow.id = purchase.id;
+            newRow.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">${userName}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
                     <ul>
-                        ${productDetails.map(product => `<li class="text-white">${product.name} - Cantidad: ${product.quantity}</li>`).join('')}
+                        ${productDetails.map(product => `<li>${product.name} - Cantidad: ${product.quantity}</li>`).join('')}
                     </ul>
-                    <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}$</p>
-                    <p class="text-gray-300"><b>Confirmacion de Compra:</b>${validation ? `${trueIcon}` : `${falseIcon}`}</p>
-                    <div class="flex justify-between">
-                        <button id="delete-purchase-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
-                        <button id="validate-purchase-btn"class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Confirmar</button>
-                    </div>
-                </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">${purchase.totalPrice}$</td>
+                <td class="px-6 py-4 whitespace-nowrap">${paymentValidation ? 'Pagado' : 'No Pagado'}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${shippingValidation ? 'Confirmado' : 'No Confirmado'}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <button id="delete-purchase-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
+                   
+                    <button id="validate-shipping-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Confirmar Envío</button>
+                </td>
             `;
-            listPurchases.append(newPurchase);
 
+            tableBody.append(newRow);
 
-            newPurchase.addEventListener('click',async e =>{
-
+            newRow.addEventListener('click', async e => {
+               
                 if (e.target.closest('#delete-purchase-btn')) {
-               
-                    const li = e.target.closest('#delete-purchase-btn').parentElement.parentElement.parentElement;
-                    console.log(li.id);
-                    await axios.delete(`/api/purchases/${li.id}`);
-                    li.remove();
-                    console.log('si');
+                    const tr = e.target.closest('tr');
+                    await axios.delete(`/api/purchases/${tr.id}`);
+                    tr.remove();
                 }
-                if (e.target.closest('#validate-purchase-btn')) {
-               
-                    const li = e.target.closest('#validate-purchase-btn').parentElement.parentElement.parentElement;
-                    console.log(li.id);
-                    await axios.patch(`/api/purchases/${li.id}`, {validated: true})
-                    
+                if (e.target.closest('#validate-shipping-btn')) {
+                    const tr = e.target.closest('tr');
+                    const response = await axios.patch(`/api/purchases/${tr.id}/shipped`);
+                    tr.querySelector('td:nth-child(5)').textContent = response.data.shipped ? 'Confirmado' : 'No Confirmado';
+                    e.target.textContent = response.data.shipped ? 'Cancelar Envío' : 'Confirmar Envío';
                 }
-
-            })
+            });
         }
+
+        table.appendChild(innerTable);
+
+        // Añadir la tabla al documento
+        document.getElementById('listPurchases').appendChild(table);
     } catch (error) {
         console.log(error);
     }
 })();
+
+
+
 
 
 

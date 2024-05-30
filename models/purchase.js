@@ -27,9 +27,14 @@ const purchaseSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
-    validated: {
+    paymentValidated: {
         type: Boolean,
         required: true,
+        default: false
+    },
+    shipped: {
+        type: Boolean,
+        required: false,
         default: false
     }
 });

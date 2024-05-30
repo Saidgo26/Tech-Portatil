@@ -12,7 +12,8 @@ purchasesRouter.post('/', async (request, response) => {
         const newPurchase = new Purchase({
             products,
             totalPrice,
-            user: user._id
+            user: user._id,
+            paymentValidated: true
         });
 
         // Guardar la nueva compra en la base de datos
@@ -43,18 +44,16 @@ purchasesRouter.post('/', async (request, response) => {
 
 purchasesRouter.get('/', async (request, response) => {
     try {
-        const userId = request.user._id; 
+        const purchases = await Purchase.find({}).populate('user', 'name');
 
-        // Obtener todas las compras del usuario de la base de datos
-        const purchases = await Purchase.find({ user: userId });
-
-        // Devolver las compras en formato JSON
         return response.status(200).json(purchases);
     } catch (error) {
         console.error('Error al obtener las compras:', error);
         return response.status(500).json({ error: 'Error al obtener las compras' });
     }
 });
+
+module.exports = purchasesRouter;
 
 
 
@@ -73,29 +72,31 @@ purchasesRouter.delete('/:id', async (request, response) => {
     }
 });
 
-purchasesRouter.patch('/:id', async (request, response) => {
+purchasesRouter.patch('/:id/shipped', async (request, response) => {
     try {
-        const { validated } = request.body;
-
-        // Validar que validated sea un booleano
-        if (typeof validated !== 'boolean') {
-            return response.status(400).json({ error: 'El campo "validated" debe ser un booleano' });
-        }
-
-        // Buscar la compra por ID y actualizar el campo validated
-        const purchase = await Purchase.findByIdAndUpdate(request.params.id, { validated }, { new: true });
+        // Buscar la compra por ID
+        const purchase = await Purchase.findById(request.params.id);
 
         // Comprobar si la compra existe
         if (!purchase) {
             return response.status(404).json({ error: 'Compra no encontrada' });
         }
 
-        return response.sendStatus(200);
+        // Alternar el valor de shipped
+        purchase.shipped = !purchase.shipped;
+
+        // Guardar la compra actualizada
+        await purchase.save();
+
+        return response.status(200).json({ shipped: purchase.shipped });
     } catch (error) {
         console.error(error);
         return response.sendStatus(500);
     }
-});
+}); 
+
+
+
 
 
 

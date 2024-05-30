@@ -198,11 +198,13 @@ const loadProducts = async () => {
             withCredentials: true,
         });
 
+
         data.forEach(product => {
             const newProduct = document.createElement('li');
             console.log(product.productSpecifications[0].productProcessor);
             const fileName = product.productImage.split('\\').pop();
             newProduct.id = product.id;
+            console.log(data);
             newProduct.className = '';
         
             newProduct.innerHTML = `
@@ -211,7 +213,8 @@ const loadProducts = async () => {
               <img class="w-full h-full object-cover" src="/images/${fileName}" alt="Product Image">
             </div>
             <div class="p-4">
-              <h3 class="text-lg font-medium mb-2">${product.productName}</h3>
+            <h3 class="text-lg font-medium mb-2">${product.productName}</h3>
+            <p class= text-md font-semibold mb-4">Disponible(s):${product.quantity}</p>
               <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productProcessor}</p>
               <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productOs}</p>
               <p class="text-gray-600 text-sm mb-4">${product.productSpecifications[0].productStorage}</p>
@@ -396,71 +399,61 @@ toggleMobileMenu();
 toggleCartSection();
 
 
-(async () => {
+// (async () => {
+//   const token = document.cookie.split('; ').find(row => row.startsWith('accessToken=')).split('=')[1];
+//   const userId = JSON.parse(atob(token.split('.')[1])).id;
   
-    
-    const { data } = await axios.get(`/api/purchases`, {
-        withCredentials: true,
-    });
-    try {
-        for (const purchase of data) {
-            const validation = purchase.validated;
-            // Obtener el nombre del usuario
+//   const { data } = await axios.get('/api/purchases', {
+//       withCredentials: true,
+//   });
+//   try {
+//       const userPurchases = data.filter(purchase => purchase.user._id === userId);
+//       for (const purchase of userPurchases) {
+//           const validation = purchase.validated;
 
-            const userResponse = await axios.get(`/api/users/${purchase.user}`);
-            const userName = userResponse.data.name;
+//           // Obtener los nombres de los productos y sus cantidades
+//           const productDetails = [];
+//           for (const productInfo of purchase.products) {
+//               const productResponse = await axios.get(`/api/products/${productInfo.product}`);
+//               const productName = productResponse.data.product.productName;
+//               productDetails.push({
+//                   name: productName,
+//                   quantity: productInfo.quantity
+//               });
+//           }
 
-            // Obtener los nombres de los productos y sus cantidades
-            const productDetails = [];
-            for (const productInfo of purchase.products) {
-                const productResponse = await axios.get(`/api/products/${productInfo.product}`);
-                const productName = productResponse.data.product.productName;
-                console.log(productResponse.data.product.productName);
-                productDetails.push({
-                    name: productName,
-                    quantity: productInfo.quantity
-                });
-            }
+//           // Crear elementos HTML para mostrar la compra
+//           const newPurchase = document.createElement('li');
+//           newPurchase.id = purchase._id;
+//           newPurchase.innerHTML = `
+//               <div class="bg-gray-900 p-4 rounded-lg shadow-lg">
+//                   <p class="text-gray-300"><b>Nombre del Usuario:</b> ${purchase.user.name}</p>
+//                   <p class="text-gray-300"><b>Productos:</b></p>
+//                   <ul>
+//                       ${productDetails.map(product => `<li class="text-white">${product.name} - Cantidad: ${product.quantity}</li>`).join('')}
+//                   </ul>
+//                   <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}$</p>
+//                   <p class="text-gray-300"><b>Confirmación de Compra:</b> ${String(validation)}</p>
+//                   <div class="flex justify-between">
+//                       <button id="validate-purchase-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Pagar</button>
+//                       <button id="delete-purchase-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
+//                   </div>
+//               </div>
+//           `;
+//           document.getElementById('listPurchases').append(newPurchase);
 
-            // Crear elementos HTML para mostrar la compra
-            const newPurchase = document.createElement('li');
-            newPurchase.id = purchase.id;
-            newPurchase.innerHTML = `
-                <div class="bg-gray-900 p-4 rounded-lg shadow-lg">
-                    <p class="text-gray-300"><b>Nombre del Usuario:</b> ${userName}</p>
-                    <p class="text-gray-300"><b>Productos:</b></p>
-                    <ul>
-                        ${productDetails.map(product => `<li class="text-white">${product.name} - Cantidad: ${product.quantity}</li>`).join('')}
-                    </ul>
-                    <p class="text-gray-300"><b>Precio Total:</b> ${purchase.totalPrice}$</p>
-                    <p class="text-gray-300"><b>Confirmacion de Compra:</b>${String(validation)}</p>
-                    <div class="flex justify-between">
-                        <button id="validate-purchase-btn"class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Pagar</button>
-                        <button id="delete-purchase-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
-                    </div>
-                </div>
-            `;
-            listPurchases.append(newPurchase);
+//           newPurchase.querySelector('#validate-purchase-btn').addEventListener('click', () => {
+//               window.location.href = '/pago';
+//           });
 
-            newPurchase.querySelector('#validate-purchase-btn').addEventListener('click', async () => {
-              window.location.href = '/pago';
-          });
+//           newPurchase.querySelector('#delete-purchase-btn').addEventListener('click', async () => {
+//               const li = newPurchase;
+//               await axios.delete(`/api/purchases/${li.id}`);
+//               li.remove();
+//           });
+//       }
+//   } catch (error) {
+//       console.log(error);
+//   }
+// })();
 
-
-            newPurchase.addEventListener('click',async e =>{
-
-                if (e.target.closest('#delete-purchase-btn')) {
-               
-                    const li = e.target.closest('#delete-purchase-btn').parentElement.parentElement.parentElement;
-                    console.log(li.id);
-                    await axios.delete(`/api/purchases/${li.id}`);
-                    li.remove();
-                    console.log('si');
-                }
-               
-            })
-        }
-    } catch (error) {
-        console.log(error);
-    }
-})();

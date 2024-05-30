@@ -5,6 +5,10 @@ const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
 const { PAGE_URL } = require('../config')
 
+
+
+
+
 usersRouter.get('/', async (request, response) => {
   try {
     const userId = request.user.id; // Suponiendo que el ID del usuario está en la propiedad 'id' del objeto 'user'
@@ -129,6 +133,7 @@ usersRouter.get('/:id', async (request, response) => {
       return response.sendStatus(500);
   }
 });
+
 
 
 console.log('Fin de la solicitud de creación de usuario');

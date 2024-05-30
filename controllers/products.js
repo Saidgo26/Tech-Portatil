@@ -1,6 +1,31 @@
 const productsRouter = require('express').Router();
 const User = require('../models/user');
 const Product = require('../models/product');
+const { Parser } = require('json2csv');
+
+
+// Ruta para descargar el inventario en formato CSV
+productsRouter.get('/download-inventory', async (req, res) => {
+    try {
+        const products = await Product.find();
+        
+        if (!products.length) {
+            return res.status(404).json({ error: 'No hay productos disponibles' });
+        }
+
+        const fields = ['productName', 'productDescription', 'productBrand', 'productPrice', 'quantity', 'createdAt', 'updatedAt'];
+        const opts = { fields };
+        const parser = new Parser(opts);
+        const csv = parser.parse(products);
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('inventory.csv');
+        return res.send(csv);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al generar el archivo CSV' });
+    }
+});
 
 
 productsRouter.get('/', async (request, response) => {
@@ -99,6 +124,9 @@ productsRouter.patch('/:id', async (request, response) => {
         return response.sendStatus(402);
     }
 });
+
+
+
 
 module.exports = productsRouter;
 
