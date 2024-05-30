@@ -13,6 +13,7 @@ const { userExtractor } = require('./middleware/auth');
 const purchasesRouter = require('./controllers/purchases');
 const logoutRouter = require('./controllers/logout');
 const { MONGO_URI } = require('./config');
+const paymentRouter = require('./controllers/payment');
 
 
 (async()=>{
@@ -51,6 +52,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/logout', logoutRouter);
 app.use('/api/products',  productsRouter);
+app.use('/api/payment', paymentRouter );
 app.use('/api/purchases', userExtractor, purchasesRouter);
 
 

@@ -26,38 +26,32 @@ const updateCartTotal = () => {
 
 const cleanCartContent = () => {
   table.innerHTML= '';
+  localStorage.removeItem('cartItems');
 };
 
-const buyProducts = async () => {
+const buyProducts = () => {
   try {
       if (cartItems.length === 0) {
           Swal.fire("El carrito está vacío. Agrega productos antes de comprar.");
           return;
       }
 
-      // Crear un array de productos en el formato esperado por el esquema
-      const purchaseProducts = cartItems.map(item => ({
-          product: item.productId,
-          quantity: item.quantity
+      // Guardar los detalles de la compra en el localStorage
+      localStorage.setItem('purchaseDetails', JSON.stringify({
+          products: cartItems,
+          totalPrice: parseFloat(totalPriceCart.textContent)
       }));
 
-      // Realizar la compra con los productos en el carrito
-      const {data} = await axios.post('/api/purchases', {
-          products: purchaseProducts,
-          totalPrice: parseFloat(totalPriceCart.textContent)
-      });
-      console.log(data);
-      console.log(purchaseProducts);
-
-      // Limpiar el carrito después de realizar la compra
+      // Limpiar el carrito después de guardar los detalles de la compra
       cartItems = [];
       cleanCartContent();
       updateCartTotal();
 
-      Swal.fire("Compra Realizada!!!");
+      window.location.pathname = `/pago/`
+
   } catch (error) {
-      console.error('Error al realizar la compra:', error);
-      alert('Error al realizar la compra');
+      console.error('Error al guardar los detalles de la compra:', error);
+      alert('Error al guardar los detalles de la compra');
   }
 };
 
@@ -149,6 +143,7 @@ const renderCartItems = () => {
           localStorage.setItem('cartItems', JSON.stringify(cartItems));
           renderCartItems(); // Volver a renderizar la tabla del carrito
           updateCartTotal(); // Actualizar el total del carrito
+
           Toastify({
               text: "PRODUCTO ELIMINADO",
               duration: 2000,
@@ -202,8 +197,6 @@ const loadProducts = async () => {
         const { data } = await axios.get('/api/products/', {
             withCredentials: true,
         });
-
-        
 
         data.forEach(product => {
             const newProduct = document.createElement('li');

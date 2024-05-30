@@ -3,9 +3,6 @@ const User = require('../models/user');
 const Product = require('../models/product');
 
 
-
-
-
 productsRouter.get('/', async (request, response) => {
     try {
         const products = await Product.find();
